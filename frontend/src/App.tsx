@@ -33,10 +33,9 @@
 // }
 
 // export default App
-import { QueryClient, QueryClientProvider, useQuery } from "react-query";
-import { useEffect, useState } from "react";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { useState } from "react";
 import axios from "axios";
-import * as React from "react";
 
 const queryClient = new QueryClient();
 
@@ -44,7 +43,7 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <FileUpload />
-      <Login>hello</Login>
+      <Login />
     </QueryClientProvider>
   );
 }
