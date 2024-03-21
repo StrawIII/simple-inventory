@@ -71,15 +71,18 @@ function FileUpload() {
 
   return (
     <>
-      <input
-        type="file"
-        multiple={false}
-        onChange={(e) => {
-          if (e.target.files && e.target.files.length > 0) {
-            setFile(e.target.files[0]);
-          }
-        }}
-      ></input>
+      <label>
+        Select a file
+        <input
+          type="file"
+          multiple={false}
+          onChange={(e) => {
+            if (e.target.files && e.target.files.length > 0) {
+              setFile(e.target.files[0]);
+            }
+          }}
+        />
+      </label>
       <button onClick={fileUploadHandler}>Upload</button>
       <p>{JSON.stringify(file)}</p>
     </>
@@ -96,13 +99,17 @@ function Login() {
 
   return (
     <>
-      <input
-        type="text"
-        onChange={(e) => {
-          setUsername(e.target.value);
-        }}
-        value={username}
-      />
+      <label>
+        Username:
+        <input
+          type="text"
+          onChange={(e) => {
+            setUsername(e.target.value);
+          }}
+          value={username}
+        />
+      </label>
+      <br />
       <button
         onClick={() => {
           console.log(username);
