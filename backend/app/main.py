@@ -28,7 +28,7 @@ app.include_router(auth.router)
 
 @app.post('/file')
 def put_files(upload_file: UploadFile):
-	data = upload_file.file.read().decode('cp1250').split('\n')
+	data = upload_file.file.read().decode('cp1250').splitlines()
 
 	reader = DictReader(data, delimiter=';')
 	print(reader.fieldnames)
