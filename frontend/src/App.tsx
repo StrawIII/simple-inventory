@@ -1,41 +1,8 @@
-// import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
-// import './App.css'
-
-// function App() {
-//   const [count, setCount] = useState(0)
-
-//   return (
-//     <>
-//       <div>
-//         <a href="https://vitejs.dev" target="_blank">
-//           <img src={viteLogo} className="logo" alt="Vite logo" />
-//         </a>
-//         <a href="https://react.dev" target="_blank">
-//           <img src={reactLogo} className="logo react" alt="React logo" />
-//         </a>
-//       </div>
-//       <h1>Vite + React</h1>
-//       <div className="card">
-//         <button onClick={() => setCount((count) => count + 1)}>
-//           count is {count}
-//         </button>
-//         <p>
-//           Edit <code>src/App.tsx</code> and save to test HMR
-//         </p>
-//       </div>
-//       <p className="read-the-docs">
-//         Click on the Vite and React logos to learn more
-//       </p>
-//     </>
-//   )
-// }
-
-// export default App
 import { QueryClient, QueryClientProvider } from "react-query";
 import { useState } from "react";
 import axios from "axios";
+import React from "react";
+// import { onChange } from "./types.ts";
 
 const queryClient = new QueryClient();
 
@@ -71,8 +38,9 @@ function FileUpload() {
 
   return (
     <>
-      <label>
+      <label className="text-xl font-bold underline">
         Select a file
+        <br />
         <input
           type="file"
           multiple={false}
@@ -83,6 +51,7 @@ function FileUpload() {
           }}
         />
       </label>
+      <br />
       <button onClick={fileUploadHandler}>Upload</button>
       <p>{JSON.stringify(file)}</p>
     </>
@@ -95,41 +64,62 @@ function FileUpload() {
 
 // function Login({ children }: LoginProps) {
 function Login() {
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState("unknown");
+
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUsername(e.target.value);
+  };
 
   return (
     <>
       <label>
         Username:
-        <input
-          type="text"
-          onChange={(e) => {
-            setUsername(e.target.value);
-          }}
-          value={username}
-        />
+        <input type="text" onChange={handleUsernameChange} value={username} />
       </label>
       <br />
       <button
         onClick={() => {
           console.log(username);
           axios
+            .post("http://127.0.0.1:8000/auth/", {
+              username: username,
+              password: "password",
+            })
+            .then((res) => {
+              console.log(res);
+              localStorage.setItem("token", res.data?.token);
+              console.log(res.data?.token);
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        }}
+      >
+        Get token
+      </button>
+      <br />
+      <button
+        onClick={() => {
+          console.log(username);
+          axios
             .post(
-              "http://127.0.0.1:8000/auth/" + username,
-              {},
+              "http://127.0.0.1:8000/auth/",
+              { username: username, password: "password" },
               {
                 headers: {
-                  Authorization:
-                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJBdXRobGliIiwic3ViIjoicm9tYW4ifQ.c_OqRQWOwfSzyCQK0SaLKPh_AI7IJfDgeaZ3aRQCZCQ",
+                  Authorization: localStorage.getItem("token"),
                 },
               }
             )
             .then((res) => {
               console.log(res);
+            })
+            .catch((error) => {
+              console.log(error);
             });
         }}
       >
-        Login
+        Test token
       </button>
     </>
   );

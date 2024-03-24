@@ -1,8 +1,9 @@
-from dotenv import load_dotenv
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
+    model_config = SettingsConfigDict(env_file=".env")
+
     PROJECT_NAME: str = "Simple Inventory System"
 
     JWT_KEY: str
@@ -25,7 +26,8 @@ class Settings(BaseSettings):
     #         port=self.POSTGRES_PORT,
     #         path=self.POSTGRES_DB,
     #     )
+    # class Config:
+    #     env_file: str = find_dotenv()
 
 
-load_dotenv()
 settings = Settings()

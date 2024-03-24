@@ -1,3 +1,5 @@
+from time import time
+
 from authlib.jose import jwt
 from authlib.jose.errors import BadSignatureError
 
@@ -10,18 +12,21 @@ def verify_password():
 
 
 def create_access_token(user: str) -> bytes:
-    header = {"alg": settings.JWT_ALG}
-    payload = {"iss": "Authlib", "sub": user}
-    token = jwt.encode(header=header, payload=payload, key=settings.JWT_KEY)
+    header = {"typ": "JWT", "alg": settings.JWT_ALG}
+    payload = {"iss": "Authlib", "sub": user, "exp": time() + 60, "iat": time()}
+
+    try:
+        token = jwt.encode(header=header, payload=payload, key=settings.JWT_KEY)
+    except Exception:
+        return b""
+
     return token
 
 
 def verify_access_token(user: str, token: str) -> bool:
-    print(type(token))
-    # TODO verify expiration
     try:
         claims = jwt.decode(s=token, key=settings.JWT_KEY)
     except BadSignatureError:
         return False
 
-    return claims["sub"] == user
+    return user == claims["sub"] and time() < claims["exp"]
