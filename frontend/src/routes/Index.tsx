@@ -1,17 +1,12 @@
-import { QueryClient, QueryClientProvider } from "react-query";
-import { useState } from "react";
 import axios from "axios";
-import React from "react";
-// import { onChange } from "./types.ts";
+import React, { useState } from "react";
 
-const queryClient = new QueryClient();
-
-export default function App() {
+export default function Index() {
   return (
-    <QueryClientProvider client={queryClient}>
+    <>
       <FileUpload />
       <Login />
-    </QueryClientProvider>
+    </>
   );
 }
 
@@ -58,11 +53,6 @@ function FileUpload() {
   );
 }
 
-// type LoginProps = {
-//   children: React.ReactNode;
-// };
-
-// function Login({ children }: LoginProps) {
 function Login() {
   const [username, setUsername] = useState("unknown");
 
