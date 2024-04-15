@@ -1,2 +1,2 @@
-# simple-inventory-system
-Simple Inventury System (SIS)
+# simple-inventory
+Simple Inventury
