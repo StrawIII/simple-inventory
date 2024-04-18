@@ -1,2 +1,2 @@
 # simple-inventory
-Simple Inventury monorepo
+Simple Inventory monorepo
