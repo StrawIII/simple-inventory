@@ -13,15 +13,18 @@ export function DragAndDrop() {
 
   return (
     <div
-      className="flex h-screen items-center justify-center bg-slate-300 "
+      className="flex h-96 w-96 flex-col items-center justify-between rounded-3xl bg-green-300 p-5 pt-48"
       {...getRootProps()}
     >
       <input {...getInputProps()} />
       {isDragActive ? (
-        <p>Drop the files here ...</p>
+        <span className="bg-orange-100">Drop it like it's hot!</span>
       ) : (
-        <p>Drag 'n' drop some files here, or click to select files</p>
+        <p className="bg-orange-100">Drop some files here!</p>
       )}
+      <button className="rounded-full bg-primary-light p-2 text-white">
+        Select files
+      </button>
     </div>
   );
 }
