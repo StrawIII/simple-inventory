@@ -10,4 +10,4 @@ COPY . .
 
 EXPOSE 5173 8080 3000
 
-CMD ["npm", "run", "preview"]
+CMD ["npm", "run", "dev"]
