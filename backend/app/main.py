@@ -1,36 +1,31 @@
 from csv import DictReader
 
-from fastapi import FastAPI, UploadFile
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import APIRouter, FastAPI, UploadFile
 
 from app.api.v1.routers import auth, health
 from app.core.config import settings
 
-allowed_origins = ['']
+app = FastAPI(title=settings.PROJECT_NAME)
 
-app = FastAPI(
-	title=settings.PROJECT_NAME,
-	openapi_url='/openapi.json',
-)
-
-
-app.add_middleware(
-	CORSMiddleware,
-	allow_origins=['*'],
-	allow_credentials=True,
-	allow_methods=['*'],
-	allow_headers=['*'],
-)
-
-app.include_router(health.router)
-app.include_router(auth.router)
+api_v1_router = APIRouter()
+api_v1_router.include_router(health.router, prefix="/health")
+api_v1_router.include_router(auth.router, prefix="/auth")
 
 
-@app.post('/file')
+app.include_router(api_v1_router, prefix="/api/v1")
+
+
+# TODO remove all routes below
+@app.post("/file")
 def put_files(upload_file: UploadFile):
-	data = upload_file.file.read().decode('cp1250').splitlines()
+    data = upload_file.file.read().decode("cp1250").splitlines()
 
-	reader = DictReader(data, delimiter=';')
-	print(reader.fieldnames)
+    reader = DictReader(data, delimiter=";")
+    print(reader.fieldnames)
 
-	return {'data': reader.fieldnames}
+    return {"data": reader.fieldnames}
+
+
+@app.get("/api/v1/hello")
+def hello():
+    return "/api/v1/hello"
