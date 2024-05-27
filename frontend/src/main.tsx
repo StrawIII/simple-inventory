@@ -28,7 +28,7 @@ createRoot(document.getElementById("root")!).render(
     <QueryClientProvider client={queryClient}>
       <div className="flex h-screen w-screen flex-col">
         <RouterProvider router={router} />
-        <footer className="bg-primary-light p-2">
+        <footer className="bg-primary-light p-2 text-white">
           <p>Author: Straw</p>
           <p>
             <a href="mailto:mail@example.com">mail@example.com</a>
