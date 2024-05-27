@@ -8,17 +8,13 @@ import "./index.css";
 import Home from "./routes/Home";
 import { Login } from "./routes/Login";
 import { Admin } from "./routes/Admin";
+import { Dashboard } from "./routes/Dashboard";
 
 const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Home />,
-  },
-  {
-    path: "/admin",
-    element: <Admin />,
-  },
+  { path: "/", element: <Home /> },
+  { path: "/admin", element: <Admin /> },
   { path: "/login", element: <Login /> },
+  { path: "/dashboard", element: <Dashboard /> },
 ]);
 
 const queryClient = new QueryClient();
@@ -28,12 +24,12 @@ createRoot(document.getElementById("root")!).render(
     <QueryClientProvider client={queryClient}>
       <div className="flex h-screen w-screen flex-col">
         <RouterProvider router={router} />
-        <footer className="bg-primary-light p-2 text-white">
+        {/* <footer className="bg-primary-light p-2 text-white">
           <p>Author: Straw</p>
           <p>
             <a href="mailto:mail@example.com">mail@example.com</a>
           </p>
-        </footer>
+        </footer> */}
       </div>
     </QueryClientProvider>
   </StrictMode>,

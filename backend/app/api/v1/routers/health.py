@@ -7,6 +7,6 @@ from app.schemas.health_schema import Health
 router = APIRouter()
 
 
-@router.get('/')
+@router.get("/")
 def index() -> Health:
-	return Health(timestamp=datetime.now())
+    return Health(status="healthy", timestamp=datetime.now())
