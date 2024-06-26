@@ -1,1 +1,10 @@
-
+[project]
+name = "simple-inventory"
+version = "0.1.0"
+dependencies = [
+    "uvicorn",
+    "fastapi",
+    "pydantic",
+    "pydantic-settings",
+    "loguru",
+]
