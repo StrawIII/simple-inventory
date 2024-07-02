@@ -15,10 +15,11 @@ api_v1_router.include_router(auth.router, prefix="/auth")
 app.include_router(api_v1_router, prefix="/api/v1")
 
 
-# TODO remove all routes below
+# TODO move/remove all routes below
 @app.post("/file")
 def put_files(upload_file: UploadFile):
     data = upload_file.file.read().decode("cp1250").splitlines()
+
 
     reader = DictReader(data, delimiter=";")
     print(reader.fieldnames)

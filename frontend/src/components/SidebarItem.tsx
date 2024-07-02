@@ -1,13 +1,18 @@
+import { useContext } from "react";
+import { SidebarContext } from "./Sidebar";
+
 export type SidebarItemProps = {
   label: string;
-  expanded: boolean;
+  icon: string;
+  selected: boolean;
 };
 
-export function SidebarItem({ label, expanded }: SidebarItemProps) {
+export function SidebarItem({ label, icon, selected }: SidebarItemProps) {
+  const { expanded } = useContext(SidebarContext)
   return (
-    <div className="m-5 flex rounded-xl bg-red-300 p-5">
-      <img src="/src/assets/alarm.svg" />
-      <div className={`${expanded ? "" : "hidden"}`}>{label}</div>
+    <div className={`m-5 flex rounded-xl  px-3 py-3 hover:bg-primary-light ${selected ? "bg-primary-dark" : "bg-red-300"}`}>
+      <img src={icon} />
+      <div className={`${expanded ? "" : "hidden"} px-10`}>{label}</div>
     </div>
   );
 }
