@@ -2,7 +2,7 @@ from csv import DictReader
 
 from fastapi import APIRouter, FastAPI, UploadFile
 
-from app.api.v1.routers import auth, health
+from app.api.routers import auth, health
 from app.config import settings
 
 app = FastAPI(title=settings.project_name)
@@ -12,7 +12,7 @@ api_v1_router.include_router(health.router, prefix="/health")
 api_v1_router.include_router(auth.router, prefix="/auth")
 
 
-app.include_router(api_v1_router, prefix="/api/v1")
+app.include_router(api_v1_router, prefix=settings.api_prefix)
 
 
 # TODO move/remove all routes below
