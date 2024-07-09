@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from app.config import settings
 from app.models import Base, User
 
-engine = create_engine(str(settings.postgres_dns), echo=True)
+engine = create_engine(str(settings.postgres_dsn), echo=True)
 
 Base.metadata.create_all(engine)
 
