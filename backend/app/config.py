@@ -5,7 +5,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env")
 
-    project_name: str = "Simple Inventory System"
+    project_name: str = "Simple Inventory"
+
+    api_prefix: str = "/api/v1"
 
     jwt_alg: str = "HS256"
     jwt_key: str = "secret"
