@@ -2,9 +2,15 @@
 name = "simple-inventory"
 version = "0.1.0"
 dependencies = [
+    "authlib",
     "uvicorn",
     "fastapi",
     "pydantic",
     "pydantic-settings",
+    "pydantic[email]",
     "loguru",
+    "sqlalchemy",
+    "psycopg2-binary",
+    "python-multipart",
+    "boto3",
 ]
