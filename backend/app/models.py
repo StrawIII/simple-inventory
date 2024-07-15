@@ -19,7 +19,7 @@ class Item(Base):
     __tablename__ = "item"
 
     id: Mapped[str] = mapped_column(String(255), primary_key=True)
-    owner = mapped_column(ForeignKey("user.id"))
+    owner: Mapped[int] = mapped_column(ForeignKey("user.id"))
     comment: Mapped[str] = mapped_column(Text)
     location: Mapped[str] = mapped_column(String(255))
     location_comment: Mapped[str] = mapped_column(Text)
