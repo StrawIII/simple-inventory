@@ -85,7 +85,11 @@ services:
       timeout: 10s
       retries: 5
     depends_on:
-      - backend
-      - frontend
-      - postgres
-      - minio
+      frontend:
+        condition: service_started
+      backend:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
