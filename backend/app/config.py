@@ -12,6 +12,9 @@ class Settings(BaseSettings):
     jwt_alg: str = "HS256"
     jwt_key: str = "secret"
 
+    csv_encoding: str = "cp1250"
+    csv_headers: list[str] = []
+
     # TODO move to .env
     postgres_host: str = "localhost"
     postgres_port: int = 5432
