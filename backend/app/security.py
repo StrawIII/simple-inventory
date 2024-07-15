@@ -2,13 +2,23 @@ from time import time
 
 from authlib.jose import jwt
 from authlib.jose.errors import BadSignatureError
+from bcrypt import checkpw, gensalt, hashpw
 
 from app.config import settings
 
 
-def verify_password():
-    # TODO use a library to prevent timing attacks
-    pass
+def hash_password(password: str | bytes) -> bytes:
+    if isinstance(password, str):
+        password = password.encode()
+
+    return hashpw(password, gensalt())
+
+
+def verify_password(password: str | bytes, hashed_password: bytes) -> bool:
+    if isinstance(password, str):
+        password = password.encode()
+
+    return checkpw(password.encode(), hashed_password)
 
 
 def create_access_token(user: str) -> bytes:
