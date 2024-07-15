@@ -1,6 +1,7 @@
 services:
   backend:
     build: backend
+    restart: always
     volumes:
       - type: bind
         source: /etc/localtime
@@ -19,11 +20,17 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
-      # start_period: 10s
+    depends_on:
+      - postgres
+      - minio
   frontend:
     build: frontend
+    restart: always
+    depends_on:
+      - backend
   postgres:
     image: postgres:16
+    restart: always
     ports:
       - 5432:5432
     # volumes:
@@ -38,9 +45,9 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
-      # start_period: 30s
   minio:
     image: minio/minio:RELEASE.2024-07-04T14-25-45Z-cpuv1
+    restart: always
     ports:
       - 9000:9000
       - 9001:9001
@@ -62,10 +69,10 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
-      # start_period: 30s
     command: server /data --console-address ":9001"
   nginx:
     image: nginx:1.27
+    restart: always
     ports:
       - 80:80
     volumes:
@@ -77,7 +84,6 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
-      # start_period: 30s
     depends_on:
       - backend
       - frontend
