@@ -76,10 +76,10 @@ services:
       timeout: ${TIMEOUT}
       retries: ${RETRIES}
     depends_on:
-      frontend:
         condition: service_started
       backend:
         condition: service_healthy
+      frontend:
       postgres:
         condition: service_healthy
       minio:
