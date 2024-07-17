@@ -59,7 +59,6 @@ def bulk_create_items_(upload_file: UploadFile):
                 detail=f"Expected headers: {settings.csv_headers}, received headers: {reader.fieldnames}",
             )
 
-    for item in items:
-        Item()
+    # bulk insert function
 
     return {"data": items[0]}
