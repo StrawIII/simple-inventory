@@ -21,16 +21,13 @@ def verify_password(password: str | bytes, hashed_password: bytes) -> bool:
     return checkpw(password.encode(), hashed_password)
 
 
-def create_access_token(user: str) -> bytes:
+def create_access_token(user: str) -> str:
     header = {"typ": "JWT", "alg": settings.jwt_alg}
     payload = {"iss": "Authlib", "sub": user, "exp": time() + 60, "iat": time()}
 
-    try:
-        token = jwt.encode(header=header, payload=payload, key=settings.jwt_key)
-    except Exception:
-        return b""
+    token = jwt.encode(header=header, payload=payload, key=settings.jwt_key)
 
-    return token
+    return token.decode()
 
 
 def verify_access_token(user: str, token: str) -> bool:
