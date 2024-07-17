@@ -12,32 +12,32 @@ router = APIRouter()
 
 
 @router.get("")
-def get_items():
+def get_items_():
     return "OK"
 
 
 @router.post("")
-def create_item():
+def create_item_():
     return "OK"
 
 
 @router.get("/{id}")
-def get_item():
+def get_item_():
     return "OK"
 
 
 @router.put("/{id}")
-def update_item():
+def update_item_():
     return "OK"
 
 
 @router.delete("/{id}")
-def delete_item():
+def delete_item_():
     return "OK"
 
 
 @router.post("/bulk")
-def bulk_create_items(upload_file: UploadFile):
+def bulk_create_items_(upload_file: UploadFile):
     data = upload_file.file.read().decode(settings.csv_encoding).splitlines()
     reader = DictReader(data, delimiter=settings.csv_delimiter)
 
