@@ -8,6 +8,7 @@ from app.config import settings
 
 app = FastAPI(title=settings.project_name)
 
+# should not be needed when running behind a reverse proxy like nginx
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
