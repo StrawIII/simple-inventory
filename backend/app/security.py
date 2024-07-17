@@ -3,6 +3,7 @@ from time import time
 from authlib.jose import jwt
 from authlib.jose.errors import BadSignatureError
 from bcrypt import checkpw, gensalt, hashpw
+from fastapi import HTTPException, status
 
 from app.config import settings
 
@@ -34,6 +35,9 @@ def verify_access_token(user: str, token: str) -> bool:
     try:
         claims = jwt.decode(s=token, key=settings.jwt_key)
     except BadSignatureError:
-        return False
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token signature",
+        )
 
     return user == claims["sub"] and time() < claims["exp"]
