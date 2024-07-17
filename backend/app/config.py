@@ -1,3 +1,5 @@
+from typing import List
+
 from pydantic import PostgresDsn, computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -13,7 +15,7 @@ class Settings(BaseSettings):
     jwt_key: str = "secret"
 
     csv_encoding: str = "cp1250"
-    csv_headers: list[str] = []
+    csv_headers: List[str] = []
 
     # TODO move to .env
     postgres_host: str = "localhost"
