@@ -10,6 +10,11 @@ class Settings(BaseSettings):
     project_name: str = "Simple Inventory"
 
     api_prefix: str = "/api/v1"
+    cors_origins: List[str] = [
+        "http://localhost:3000",
+    ]
+
+    cookie_key: str = "simple_inventory"
 
     jwt_alg: str = "HS256"
     jwt_key: str = "secret"
