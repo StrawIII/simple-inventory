@@ -34,8 +34,3 @@ def put_files(upload_file: UploadFile):
     print(reader.fieldnames)
 
     return {"data": reader.fieldnames}
-
-
-@app.get("/api/v1/hello")
-def hello():
-    return "/api/v1/hello"
