@@ -20,7 +20,22 @@ class Settings(BaseSettings):
     jwt_key: str = "secret"
 
     csv_encoding: str = "cp1250"
-    csv_headers: List[str] = []
+    csv_delimiter: str = ";"
+    csv_headers: List[str] = [
+        "Typ",
+        "Inv. číslo",
+        "Název",
+        "Výr. číslo",
+        "Dat. zařazení",
+        "NS",
+        "Kód umístění",
+        "Název umístění",
+        "Klasifikace",
+        "Vstupní účetní cena",
+        "Zůst. cena",
+        "Poznámka",
+        "Hmot. odp.",
+    ]
 
     # TODO move to .env
     postgres_host: str = "localhost"
