@@ -15,7 +15,6 @@ class Settings(BaseSettings):
     ]
 
     cookie_key: str = "simple_inventory"
-
     jwt_alg: str = "HS256"
     jwt_key: str = "secret"
 
@@ -65,4 +64,5 @@ class Settings(BaseSettings):
     #     env_file: str = find_dotenv()
 
 
+# TODO make it dependency injectable
 settings = Settings()
