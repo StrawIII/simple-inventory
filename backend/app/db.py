@@ -5,11 +5,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
 from app.config import settings
-from app.models import Base, User
+from app.models import User
 
 engine = create_engine(str(settings.postgres_dsn), echo=True)
-
-Base.metadata.create_all(engine)
 
 with Session(engine) as session:
     print("adding user")
