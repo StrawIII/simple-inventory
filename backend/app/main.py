@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.routers import auth, health, items
 from app.config import settings
 
-app = FastAPI(title=settings.project_name)
+app = FastAPI(title=settings.project_name)  # add settings as DI
 
 # should not be needed when running behind a reverse proxy like nginx
 app.add_middleware(
