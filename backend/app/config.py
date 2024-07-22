@@ -1,5 +1,6 @@
-from typing import List
+from typing import Annotated, List
 
+from fastapi import Depends
 from pydantic import PostgresDsn, computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -64,5 +65,6 @@ class Settings(BaseSettings):
     #     env_file: str = find_dotenv()
 
 
-# TODO make it dependency injectable
 settings = Settings()
+
+SettingsDep = Annotated[Settings, Depends(lambda: settings)]
