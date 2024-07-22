@@ -4,7 +4,7 @@ from typing import List
 from fastapi import APIRouter, HTTPException, UploadFile, status
 from pydantic import ValidationError
 
-from app.config import settings
+from app.config import SettingsDep
 from app.models import Item
 from app.schemas import ItemFromFile
 
@@ -37,7 +37,7 @@ def delete_item_():
 
 
 @router.post("/bulk")
-def bulk_create_items_(upload_file: UploadFile):
+def bulk_create_items_(upload_file: UploadFile, settings: SettingsDep):
     data = upload_file.file.read().decode(settings.csv_encoding).splitlines()
     reader = DictReader(data, delimiter=settings.csv_delimiter)
 
