@@ -1,26 +1,33 @@
-from typing import Annotated
+from typing import Annotated, Any
 
+import boto3
 from fastapi import Depends
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
 from app.config import settings
-from app.models import User
 
 engine = create_engine(str(settings.postgres_dsn), echo=True)
 
-with Session(engine) as session:
-    print("adding user")
-    roman = User(id=16, email="roman16.seiner@fs.cvut.cz")
-    cyril = User(id=15, email="cyril15@fs.cvut.cz")
-    # session.add(roman)
-    # session.add_all([roman, cyril])
-    session.commit()
 
-
-def get_session():
+def get_db():
     with Session(engine) as session:
         yield session
 
 
-SessionDep = Annotated[Session, Depends(get_session)]
+DBDep = Annotated[Session, Depends(get_db)]
+
+
+s3 = boto3.client(
+    "s3",
+    endpoint_url="http://localhost:9000",
+    aws_access_key_id="minio_access_key",
+    aws_secret_access_key="minio_secret_key",
+)
+
+
+def get_s3_client():
+    return s3
+
+
+S3Dep = Annotated[Any, Depends(get_s3_client)]
