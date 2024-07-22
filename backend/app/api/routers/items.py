@@ -62,3 +62,15 @@ def bulk_create_items_(upload_file: UploadFile):
     # bulk insert function
 
     return {"data": items[0]}
+
+
+@router.get("/{id}/image")
+def get_item_image_(settings: SettingsDep):
+    # * retreive from MINIO using BOTO3
+    return settings.csv_encoding
+
+
+@router.post("/{id}/image")
+def add_item_image_(settings: SettingsDep):
+    # * save to MINIO using BOTO3
+    return "OK"
