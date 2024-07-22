@@ -1,6 +1,4 @@
-from csv import DictReader
-
-from fastapi import APIRouter, FastAPI, UploadFile
+from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routers import auth, health, items
@@ -24,14 +22,3 @@ api_router.include_router(items.router, prefix="/items")
 
 
 app.include_router(api_router, prefix=settings.api_prefix)
-
-
-# TODO move/remove all routes below
-@app.post("/file")
-def put_files(upload_file: UploadFile):
-    data = upload_file.file.read().decode("cp1250").splitlines()
-
-    reader = DictReader(data, delimiter=";")
-    print(reader.fieldnames)
-
-    return {"data": reader.fieldnames}
