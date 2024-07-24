@@ -37,6 +37,17 @@ class Settings(BaseSettings):
         "Hmot. odp.",
     ]
 
+    smtp_host: str = ""
+    smtp_port: int = 0
+    smtp_user: str = ""
+    smtp_password: str = ""
+    smtp_tls: bool = True
+
+    @computed_field
+    @property
+    def smtp(self) -> dict:
+        return {}
+
     # TODO move to .env
     postgres_host: str = "localhost"
     postgres_port: int = 5432
