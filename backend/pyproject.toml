@@ -15,4 +15,5 @@ dependencies = [
     "boto3",
     "bcrypt",
     "alembic",
+    "jinja2",
 ]
