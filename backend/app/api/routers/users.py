@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, status
 from sqlalchemy.exc import IntegrityError
 
 from app.db import DBDep
-from app.models import Item, User
+from app.models import Borrow, Item, User
 from app.schemas import UserInUI
 from app.security import CurrentUserDep, IsAdminDep, hash_password
 
@@ -47,3 +47,8 @@ def update_user(username: str):
 @router.get("/{username}/items")
 def get_items(username: str, db: DBDep, current_user: CurrentUserDep):
     return db.query(Item).filter(Item.owner_id == current_user)
+
+
+@router.get("/{username}/borrows")
+def get_borrows(username: str, db: DBDep, current_user: CurrentUserDep):
+    return db.query(Borrow).filter(Borrow.user_id == current_user)
