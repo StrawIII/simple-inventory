@@ -16,7 +16,7 @@ def get_users(db: DBDep, is_admin: IsAdminDep):
 
 @router.get("/{username}")
 def get_user(username: str):
-    return "OK"
+    pass
 
 
 @router.post("/users", status_code=201)
@@ -41,7 +41,7 @@ def create_user_(user: UserInUI, db: DBDep):
 
 @router.put("/{username}")
 def update_user(username: str):
-    return "OK"
+    pass
 
 
 @router.get("/{username}/items")
