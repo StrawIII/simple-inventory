@@ -37,31 +37,28 @@ def create_access_token(username: str) -> str:
     return token.decode()
 
 
-# def verify_access_token(username: str, request: Request) -> None:
-#     token = request.cookies.get(settings.cookie_key)
+def verify_access_token(username: str, request: Request) -> None:
+    token = request.cookies.get(settings.cookie_key)
 
-#     try:
-#         claims = jwt.decode(s=token, key=settings.jwt_key)
-#     except BadSignatureError:
-#         raise HTTPException(
-#             status_code=status.HTTP_401_UNAUTHORIZED,
-#             detail="Invalid token signature",
-#         )
+    try:
+        claims = jwt.decode(s=token, key=settings.jwt_key)
+    except BadSignatureError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token signature",
+        )
 
-#     if username != claims["sub"]:
-#         raise HTTPException(
-#             status_code=status.HTTP_401_UNAUTHORIZED,
-#             detail="Invalid token for the current user",
-#         )
+    if username != claims["sub"]:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token for the current user",
+        )
 
-#     if time() > claims["exp"]:
-#         raise HTTPException(
-#             status_code=status.HTTP_401_UNAUTHORIZED,
-#             detail="Expired token",
-#         )
-
-
-# VerifyTokenDep = Annotated[None, Depends(verify_access_token)]
+    if time() > claims["exp"]:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Expired token",
+        )
 
 
 def get_current_user(request: Request, username, db: DBDep) -> int:
