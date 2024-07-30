@@ -2,7 +2,7 @@ from csv import DictReader
 from io import BytesIO
 from typing import List
 
-from fastapi import APIRouter, HTTPException, Response, UploadFile, status
+from fastapi import APIRouter, Depends, HTTPException, Response, UploadFile, status
 from pydantic import ValidationError
 from sqlalchemy.exc import IntegrityError
 
@@ -10,13 +10,13 @@ from app.config import SettingsDep
 from app.db import DBDep, S3Dep
 from app.models import Item
 from app.schemas import ItemFromFile, ItemFromUI, ItemUpdate
-from app.security import CurrentUserDep, IsAdminDep
+from app.security import CurrentUserDep, is_admin
 
 router = APIRouter()
 
 
-@router.get("/items")
-def get_items_(db: DBDep, is_admin: IsAdminDep):
+@router.get("/items", dependencies=[Depends(is_admin)])
+def get_items_(db: DBDep):
     return db.query(Item).all()
 
 

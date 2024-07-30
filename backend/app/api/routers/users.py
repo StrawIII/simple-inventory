@@ -1,16 +1,16 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.exc import IntegrityError
 
 from app.db import DBDep
 from app.models import Borrow, Item, User
 from app.schemas import UserInUI
-from app.security import CurrentUserDep, IsAdminDep, hash_password
+from app.security import CurrentUserDep, hash_password, is_admin
 
 router = APIRouter(prefix="/users")
 
 
-@router.get("")
-def get_users(db: DBDep, is_admin: IsAdminDep):
+@router.get("", dependencies=[Depends(is_admin)])
+def get_users(db: DBDep):
     return db.query(User).all()
 
 
