@@ -44,6 +44,7 @@ class Settings(BaseSettings):
 
     max_image_size: int = 2_000_000  # bytes = 2 MB
 
+    smtp_enabled: bool = False
     smtp_host: str = ""
     smtp_port: int = 0
     smtp_user: str = ""
