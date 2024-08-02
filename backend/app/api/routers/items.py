@@ -2,27 +2,28 @@ from csv import DictReader
 from io import BytesIO
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException, Response, UploadFile, status
+from fastapi import APIRouter, HTTPException, Response, UploadFile, status
 from pydantic import ValidationError
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, NoResultFound
 
 from app.config import SettingsDep
 from app.db import DBDep, S3Dep
 from app.models import Item
-from app.schemas import ItemFromFile, ItemFromUI, ItemUpdate
-from app.security import CurrentUserDep, is_admin
+from app.schemas import ItemCreate, ItemCreateBulk, ItemUpdate
+from app.security import CurrentUserDep
 
 router = APIRouter()
 
 
-@router.get("/items", dependencies=[Depends(is_admin)])
-def get_items_(db: DBDep):
-    return db.query(Item).all()
+@router.get("")
+def get_items_(db: DBDep, current_user: CurrentUserDep):
+    return db.query(Item).filter(Item.owner_id == current_user).order_by(Item.id).all()
 
 
 @router.post("")
-def create_item_(item: ItemFromUI, db: DBDep, current_user: CurrentUserDep):
+def create_item_(item: ItemCreate, db: DBDep, current_user: CurrentUserDep):
     db.add(Item(**item.model_dump(), owner_id=current_user))
+
     try:
         db.commit()
     except IntegrityError as e:
@@ -41,12 +42,14 @@ def get_item_(item_id: int, db: DBDep):
 
 @router.put("/{item_id}")
 def update_item_(
-    item_id: int, item_update: ItemUpdate, db: DBDep, current_user: CurrentUserDep
+    item_id: int,
+    item_update: ItemUpdate,
+    db: DBDep,
+    current_user: CurrentUserDep,
 ):
-    # TODO DI item_exists() -> item or HTTP
-    item = db.query(Item).filter(Item.id == item_id).first()
-
-    if not item:
+    try:
+        item = db.query(Item).filter(Item.id == item_id).one()
+    except NoResultFound:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Item not found",
@@ -75,10 +78,10 @@ def update_item_(
 
 
 @router.delete("/{item_id}")
-def delete_item(item_id: int, db: DBDep, current_user: CurrentUserDep):
-    item = db.query(Item).filter(Item.id == item_id).first()
-
-    if not item:
+def delete_item_(item_id: int, db: DBDep, current_user: CurrentUserDep):
+    try:
+        item = db.query(Item).filter(Item.id == item_id).one()
+    except NoResultFound:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Item not found",
@@ -119,11 +122,11 @@ def bulk_create_items_(
             detail=f"Expected headers: {settings.csv_headers}, received headers: {reader.fieldnames}",
         )
 
-    items: List[ItemFromFile] = []
+    items: List[ItemCreateBulk] = []
 
     for row in reader:
         try:
-            items.append(ItemFromFile(**row))
+            items.append(ItemCreateBulk(**row))
         except ValidationError:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -134,7 +137,7 @@ def bulk_create_items_(
         [
             Item(
                 **item.model_dump(
-                    include={"id", "name", "comment", "location"},
+                    include={"external_id", "name", "comment", "location"},
                 ),
                 owner_id=current_user,
             )

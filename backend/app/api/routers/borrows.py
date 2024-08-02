@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, NoResultFound
 
 from app.db import DBDep
 from app.models import Borrow
@@ -18,7 +18,7 @@ def get_borrows_(db: DBDep):
 def create_borrow_(
     borrow_request: BorrowRequest, db: DBDep, current_user: CurrentUserDep
 ):
-    db.add(Borrow(**borrow_request, user_id=current_user))
+    db.add(Borrow(**borrow_request.model_dump(), user_id=current_user))
 
     try:
         db.commit()
@@ -37,13 +37,18 @@ def get_borrow_(borrow_id: int, db: DBDep):
 
 
 @router.put("/{borrow_id}")
-def update_borrow_(borrow_id: int, db: DBDep, current_user: CurrentUserDep):
-    pass
+def update_borrow_(borrow_id: int, db: DBDep, current_user: CurrentUserDep): ...
 
 
-@router.delete("/{id}")
+@router.delete("/{borrow_id}")
 def delete_borrow_(borrow_id: int, db: DBDep, current_user: CurrentUserDep):
-    borrow = db.query(Borrow).filter(Borrow.id == borrow_id).first()
+    try:
+        borrow = db.query(Borrow).filter(Borrow.id == borrow_id).one()
+    except NoResultFound:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found",
+        )
 
     if not borrow:
         raise HTTPException(

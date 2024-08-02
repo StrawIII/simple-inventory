@@ -15,15 +15,20 @@ class UserCreds(BaseModel):
     password: str
 
 
-class UserInUI(BaseModel):
+class UserCreate(BaseModel):
     username: str
     email: str
     password: str
+    is_admin: bool = False
 
 
-class ItemFromFile(BaseModel):
+class UserDelete(BaseModel):
+    username: str
+
+
+class ItemCreateBulk(BaseModel):
     # item_type: str = Field(alias="Typ")
-    id: str = Field(alias="Inv. číslo")
+    external_id: str = Field(alias="Inv. číslo")
     name: str = Field(alias="Název")
     # serial_number: str = Field("", alias="Výr. číslo")
     # inclusion_date: datetime = Field(alias="Dat. zařazení")
@@ -70,7 +75,7 @@ class ItemFromFile(BaseModel):
     #     )
 
 
-class ItemFromUI(BaseModel):
+class ItemCreate(BaseModel):
     name: str
     comment: Optional[str] = None
     location: Optional[str] = None

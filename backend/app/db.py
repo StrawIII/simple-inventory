@@ -6,7 +6,7 @@ from fastapi import Depends
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
-from app.config import settings
+from app.config import SettingsDep, settings
 
 engine = create_engine(str(settings.postgres_dsn), echo=True)
 
@@ -41,3 +41,13 @@ if __name__ == "__main__":
     )
     for bucket in s3.list_buckets()["Buckets"]:
         print(f'  {bucket["Name"]}')
+
+
+# ? move to crud.py
+def creta_root_user(db: DBDep, settings: SettingsDep): ...
+
+
+def create_item_stutuses(): ...
+
+
+def create_borrow_statuses(): ...

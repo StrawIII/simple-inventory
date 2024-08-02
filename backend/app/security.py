@@ -37,8 +37,14 @@ def create_access_token(username: str) -> str:
     return token.decode()
 
 
-def verify_access_token(username: str, request: Request) -> None:
+def verify_user(request: Request, db: DBDep) -> None:
     token = request.cookies.get(settings.cookie_key)
+
+    if token is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Cookie not found",
+        )
 
     try:
         claims = jwt.decode(s=token, key=settings.jwt_key)
@@ -48,11 +54,11 @@ def verify_access_token(username: str, request: Request) -> None:
             detail="Invalid token signature",
         )
 
-    if username != claims["sub"]:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid token for the current user",
-        )
+    # if username != claims["sub"]:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_401_UNAUTHORIZED,
+    #         detail="Invalid token for the current user",
+    #     )
 
     if time() > claims["exp"]:
         raise HTTPException(
@@ -60,74 +66,30 @@ def verify_access_token(username: str, request: Request) -> None:
             detail="Expired token",
         )
 
-
-def get_current_user(request: Request, username, db: DBDep) -> int:
-    token = request.cookies.get(settings.cookie_key)
-
-    try:
-        claims = jwt.decode(s=token, key=settings.jwt_key)
-    except BadSignatureError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid token signature",
-        )
-
-    if username != claims["sub"]:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid token for the current user",
-        )
-
-    if time() > claims["exp"]:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Expired token",
-        )
-
-    user = db.query(User).filter_by(username=username).first()
+    user = db.query(User).filter_by(username=claims["sub"]).first()
 
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found",
         )
+
+
+def get_current_user_id(request: Request, db: DBDep) -> int:
+    token = request.cookies.get(settings.cookie_key)
+    claims = jwt.decode(s=token, key=settings.jwt_key)
+    user = db.query(User).filter_by(username=claims["sub"]).first()
 
     return user.id
 
 
-CurrentUserDep = Annotated[int, Depends(get_current_user)]
+CurrentUserDep = Annotated[int, Depends(get_current_user_id)]
 
 
-def is_admin(request: Request, username, db: DBDep) -> None:
+def is_admin(request: Request, db: DBDep) -> None:
     token = request.cookies.get(settings.cookie_key)
-
-    try:
-        claims = jwt.decode(s=token, key=settings.jwt_key)
-    except BadSignatureError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid token signature",
-        )
-
-    if username != claims["sub"]:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid token for the current user",
-        )
-
-    if time() > claims["exp"]:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Expired token",
-        )
-
-    user = db.query(User).filter_by(username=username).first()
-
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found",
-        )
+    claims = jwt.decode(s=token, key=settings.jwt_key)
+    user = db.query(User).filter_by(username=claims["sub"]).first()
 
     if not user.is_admin:
         raise HTTPException(
