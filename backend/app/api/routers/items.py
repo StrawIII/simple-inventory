@@ -1,8 +1,8 @@
 from csv import DictReader
-from io import BytesIO
 from typing import List
 
-from fastapi import APIRouter, HTTPException, Response, UploadFile, status
+from botocore.exceptions import ClientError
+from fastapi import APIRouter, HTTPException, UploadFile, status
 from pydantic import ValidationError
 from sqlalchemy.exc import IntegrityError, NoResultFound
 
@@ -156,11 +156,18 @@ def bulk_create_items_(
 
 
 @router.get("/{item_id}/image")
-def get_item_image_(item_id: str, s3: S3Dep):
-    response = s3.get_object(Bucket="simple-inventory", Key=item_id)
-    stream = BytesIO(response["Body"].read())
-
-    return Response(content=stream.getvalue(), media_type=response.get("ContentType"))
+def get_item_image_url_(item_id: str, s3: S3Dep):
+    try:
+        return s3.generate_presigned_url(
+            "get_object",
+            Params={"Bucket": "simple-inventory", "Key": item_id},
+            ExpiresIn=3600,
+        )
+    except ClientError:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error while creating presigned URL",
+        )
 
 
 @router.post("/{item_id}/image", status_code=status.HTTP_201_CREATED)
