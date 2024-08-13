@@ -1,12 +1,13 @@
 from typing import Annotated, List
 
+from dotenv import find_dotenv
 from fastapi import Depends
 from pydantic import PostgresDsn, computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env")
+    model_config = SettingsConfigDict(env_file=find_dotenv(), extra="ignore")
 
     project_name: str = "Simple Inventory"
 
@@ -21,7 +22,7 @@ class Settings(BaseSettings):
 
     cookie_key: str = "simple_inventory"
     jwt_alg: str = "HS256"
-    jwt_key: str = "secret"
+    jwt_key: str
     max_age: int = 2592000  # 30 days in seconds
 
     csv_encoding: str = "cp1250"
@@ -51,12 +52,11 @@ class Settings(BaseSettings):
     smtp_password: str = ""
     smtp_tls: bool = True
 
-    # TODO move to .env
     postgres_host: str = "localhost"
     postgres_port: int = 5432
-    postgres_user: str = "postgres"
-    postgres_password: str = "postgres"
-    postgres_db: str = "simple_inventory"
+    postgres_user: str
+    postgres_password: str
+    postgres_db: str
 
     @computed_field
     @property
@@ -70,13 +70,10 @@ class Settings(BaseSettings):
             path=self.postgres_db,
         )
 
-    minio_host: str = "http://localhost"
-    minio_port: int = 9000
-    minio_access_key: str = "ROiwUbXKFycBkzCf1l18"
-    minio_secret_key: str = "AnG6b0ykHlgJNTECOW2E75MfWs21wEJegzC5i3BN"
-
-    # class Config:
-    #     env_file: str = find_dotenv()
+    minio_host: str
+    minio_port: int
+    minio_root_user: str
+    minio_root_password: str
 
 
 settings = Settings()
