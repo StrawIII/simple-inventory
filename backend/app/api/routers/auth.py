@@ -3,8 +3,8 @@ from fastapi import APIRouter, Request, Response
 from app.config import SettingsDep
 from app.db import DBDep
 from app.models import User
-from app.schemas import UserCreds
-from app.security import create_access_token, verify_password
+from app.schemas import UserCreate, UserCreds
+from app.security import create_access_token, hash_password, verify_password
 
 router = APIRouter()
 
@@ -25,7 +25,7 @@ def login(response: Response, creds: UserCreds, settings: SettingsDep, db: DBDep
 
 
 # * test route
-@router.get("/test/token/{username}")
+@router.get("/test/cookie/{username}")
 def token(username: str, response: Response, settings: SettingsDep):
     token = create_access_token(username)
 
@@ -45,3 +45,15 @@ def get_cookie(request: Request, settings: SettingsDep):
     # print(request.headers)
     # print(request.cookies)
     return cookie_value
+
+
+# * test route
+@router.post("/test/user", status_code=201)
+def create_user_(user: UserCreate, db: DBDep):
+    db.add(
+        User(
+            **user.model_dump(exclude={"password"}),
+            hashed_password=hash_password(user.password),
+        )
+    )
+    db.commit()
