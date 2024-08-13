@@ -71,7 +71,6 @@ def delete_user_(
 @router.get("/{username}")
 def get_user_(username: str, db: DBDep):
     try:
-        # return db.query(User).filter_by(User.username == username).one()
         return db.scalars(select(User).where(User.username == username)).one()
     except NoResultFound:
         raise HTTPException(
