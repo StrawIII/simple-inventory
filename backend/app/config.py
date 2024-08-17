@@ -14,16 +14,15 @@ class Settings(BaseSettings):
 
     project_name: str = "Simple Inventory"
 
-    # api_prefix: str = "/api/v1"
     api_prefix: str = ""
     cors_origins: list[str] = [
         "http://localhost:3000",
     ]
 
-    root_username: str = "straw"
-    root_password: str = "root"
+    root_username: str
+    root_password: str
 
-    cookie_key: str = "simple_inventory"
+    cookie_key: str
     jwt_alg: str = "HS256"
     jwt_key: str
     max_age: int = 2592000  # 30 days in seconds
