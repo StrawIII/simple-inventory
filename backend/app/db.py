@@ -8,7 +8,8 @@ from sqlalchemy.orm import Session
 
 from app.config import settings
 
-engine = create_engine(str(settings.postgres_dsn), echo=True)
+# engine = create_engine(str(settings.postgres_dsn), echo=True)
+engine = create_engine(settings.postgres_url, echo=True)
 
 
 def get_db() -> Generator[Session, None, None]:

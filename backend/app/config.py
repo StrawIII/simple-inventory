@@ -4,8 +4,9 @@ from typing import Annotated
 
 from dotenv import find_dotenv
 from fastapi import Depends
-from pydantic import PostgresDsn, computed_field
+from pydantic import computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from sqlalchemy import URL
 
 
 class Settings(BaseSettings):
@@ -68,14 +69,14 @@ class Settings(BaseSettings):
 
     @computed_field
     @property
-    def postgres_dsn(self) -> PostgresDsn:
-        return PostgresDsn.build(
-            scheme="postgresql+psycopg2",
+    def postgres_url(self) -> URL:
+        return URL.create(
+            drivername="postgresql+psycopg2",
             username=self.postgres_user,
             password=self.postgres_password,
             host=self.postgres_host,
             port=self.postgres_port,
-            path=self.postgres_db,
+            database=self.postgres_db,
         )
 
     minio_host: str
