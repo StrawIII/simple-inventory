@@ -17,7 +17,8 @@ router = APIRouter()
 
 @router.get("")
 def get_items_(db: DBDep, current_user: CurrentUserDep):
-    return db.query(Item).filter(Item.owner_id == current_user).order_by(Item.id).all()
+    # * return basic info about each item
+    return db.scalars(select(Item).where(Item.owner_id == current_user)).all()
 
 
 @router.post("")
@@ -37,7 +38,8 @@ def create_item_(item: ItemCreate, db: DBDep, current_user: CurrentUserDep):
 
 @router.get("/{item_id}")
 def get_item_(item_id: int, db: DBDep):
-    return db.query(Item).get(item_id)
+    # * return detailed info about a specific item
+    return db.scalar(select(Item).where(Item.id == item_id))
 
 
 @router.put("/{item_id}")
@@ -47,9 +49,9 @@ def update_item_(
     db: DBDep,
     current_user: CurrentUserDep,
 ):
-    try:
-        item = db.query(Item).filter(Item.id == item_id).one()
-    except NoResultFound:
+    item = db.scalar(select(Item).where(Item.id == item_id))
+
+    if item is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Item not found",
@@ -79,9 +81,9 @@ def update_item_(
 
 @router.delete("/{item_id}")
 def delete_item_(item_id: int, db: DBDep, current_user: CurrentUserDep):
-    try:
-        item = db.query(Item).filter(Item.id == item_id).one()
-    except NoResultFound:
+    item = db.scalar(select(Item).where(Item.id == item_id))
+
+    if item is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Item not found",
