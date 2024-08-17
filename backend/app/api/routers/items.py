@@ -1,10 +1,10 @@
 from csv import DictReader
-from typing import List
 
 from botocore.exceptions import ClientError
 from fastapi import APIRouter, HTTPException, UploadFile, status
 from pydantic import ValidationError
-from sqlalchemy.exc import IntegrityError, NoResultFound
+from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 
 from app.config import SettingsDep
 from app.db import DBDep, S3Dep
@@ -13,6 +13,8 @@ from app.schemas import ItemCreate, ItemCreateBulk, ItemUpdate
 from app.security import CurrentUserDep
 
 router = APIRouter()
+
+# TODO: return Pydantic models not SQLAlchemy Results
 
 
 @router.get("")
@@ -29,11 +31,11 @@ def create_item_(item: ItemCreate, db: DBDep, current_user: CurrentUserDep):
         db.commit()
     except IntegrityError as e:
         db.rollback()
-        # TODO more granualar responses
+        # TODO: more granualar responses
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"An error occurred while creating the user: {e}",
-        )
+        ) from e
 
 
 @router.get("/{item_id}")
@@ -63,7 +65,7 @@ def update_item_(
             detail="Not your item",
         )
 
-    # TODO improve this
+    # TODO: improve this (item -> Item -> ItemResponse)
     item.name = item_update.name
     item.comment = item_update.comment
     item.location = item_update.location
@@ -76,7 +78,7 @@ def update_item_(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"An error occurred while deleting the item: {e}",
-        )
+        ) from e
 
 
 @router.delete("/{item_id}")
@@ -104,7 +106,7 @@ def delete_item_(item_id: int, db: DBDep, current_user: CurrentUserDep):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"An error occurred while deleting the item: {e}",
-        )
+        ) from e
 
 
 @router.post("/bulk", status_code=status.HTTP_201_CREATED)
@@ -117,7 +119,7 @@ def bulk_create_items_(
     data = upload_file.file.read().decode(settings.csv_encoding).splitlines()
     reader = DictReader(data, delimiter=settings.csv_delimiter)
 
-    # TODO add more sofisticated validation (ignore extra headers)
+    # TODO: add more sofisticated validation (ignore extra headers)
     if reader.fieldnames != settings.csv_headers:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -141,17 +143,17 @@ def bulk_create_items_(
                 owner_id=current_user,
             )
             for item in items
-        ]
+        ],
     )
     try:
         db.commit()
     except IntegrityError as e:
         db.rollback()
-        # TODO more granualar responses
+        # TODO: more granualar responses
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"An error occurred while creating the user: {e}",
-        )
+        ) from None
 
 
 @router.get("/{item_id}/image")
@@ -162,13 +164,14 @@ def get_item_image_url_(item_id: str, s3: S3Dep):
             Params={"Bucket": "simple-inventory", "Key": item_id},
             ExpiresIn=3600,
         )
-    except ClientError:
+    except ClientError as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Error while creating presigned URL",
-        )
+        ) from e
 
 
+# TODO: implement presigned URL
 @router.post("/{item_id}/image", status_code=status.HTTP_201_CREATED)
 def add_item_image_(
     item_id: str,
