@@ -124,16 +124,13 @@ def bulk_create_items_(
             detail=f"Expected headers: {settings.csv_headers}, received headers: {reader.fieldnames}",
         )
 
-    items: List[ItemCreateBulk] = []
-
-    for row in reader:
-        try:
-            items.append(ItemCreateBulk(**row))
-        except ValidationError:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Expected headers: {settings.csv_headers}, received headers: {reader.fieldnames}",
-            )
+    try:
+        items = [ItemCreateBulk(**row) for row in reader]
+    except ValidationError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Expected headers: {settings.csv_headers}, received headers: {reader.fieldnames}",
+        ) from None
 
     db.add_all(
         [
