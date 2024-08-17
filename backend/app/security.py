@@ -52,7 +52,7 @@ def verify_user(request: Request, db: DBDep) -> None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid token signature",
-        )
+        ) from None
 
     # if username != claims["sub"]:
     #     raise HTTPException(
