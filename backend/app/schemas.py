@@ -4,7 +4,7 @@ from typing import Literal, Optional
 from pydantic import BaseModel, Field
 
 
-# TODO implement "unhealthy" status (e.g., connectiong to database failed)
+# TODO: implement "unhealthy" status (e.g., connectiong to database failed)
 class Health(BaseModel):
     status: Literal["healthy", "unhealthy"]
     timestamp: datetime
