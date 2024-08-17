@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+from typing import AsyncGenerator
 
 from fastapi import APIRouter, Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -12,11 +13,12 @@ from app.startup import creata_root_user, create_item_statuses
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
-    print("starting")
-    db = Session(engine)
-    creata_root_user(db=db, settings=settings)
-    create_item_statuses(db=db, settings=settings)
+async def lifespan(_: FastAPI) -> AsyncGenerator[FastAPI, None]:
+    with Session(engine) as session:
+        creata_root_user(db=session, settings=settings)
+        create_item_statuses(db=session, settings=settings)
+        # TODO: add create_borrow_status
+
     yield
 
 
