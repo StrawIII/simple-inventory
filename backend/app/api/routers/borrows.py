@@ -16,7 +16,9 @@ def get_borrows_(db: DBDep):
 
 @router.post("")
 def create_borrow_(
-    borrow_request: BorrowRequest, db: DBDep, current_user: CurrentUserDep
+    borrow_request: BorrowRequest,
+    db: DBDep,
+    current_user: CurrentUserDep,
 ):
     db.add(Borrow(**borrow_request.model_dump(), user_id=current_user))
 
@@ -24,11 +26,11 @@ def create_borrow_(
         db.commit()
     except IntegrityError as e:
         db.rollback()
-        # TODO more granualar responses
+        # TODO: more granualar responses
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"An error occurred while creating the borrow: {e}",
-        )
+        ) from e
 
 
 @router.get("/{borrow_id}")
@@ -48,7 +50,7 @@ def delete_borrow_(borrow_id: int, db: DBDep, current_user: CurrentUserDep):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found",
-        )
+        ) from None
 
     if not borrow:
         raise HTTPException(
@@ -66,8 +68,8 @@ def delete_borrow_(borrow_id: int, db: DBDep, current_user: CurrentUserDep):
         db.commit()
     except IntegrityError as e:
         db.rollback()
-        # TODO more granualar responses
+        # TODO: more granualar responses
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"An error occurred while creating the borrow request: {e}",
-        )
+        ) from e
