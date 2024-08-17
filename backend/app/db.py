@@ -1,17 +1,19 @@
-from typing import Annotated
+from typing import Annotated, Generator
 
 import boto3
 from botocore.client import BaseClient
-from fastapi import Depends
-from sqlalchemy import create_engine
+from fastapi import Depends, HTTPException, status
+from sqlalchemy import create_engine, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.config import SettingsDep, settings
+from app.models import ItemStatus, User
 
 engine = create_engine(str(settings.postgres_dsn), echo=True)
 
 
-def get_db():
+def get_db() -> Generator[Session, None, None]:
     with Session(engine) as session:
         yield session
 
@@ -31,13 +33,3 @@ def get_s3_client() -> BaseClient:
 
 
 S3Dep = Annotated[BaseClient, Depends(get_s3_client)]
-
-
-# ? move to crud.py
-def creta_root_user(db: DBDep, settings: SettingsDep): ...
-
-
-def create_item_statuses(): ...
-
-
-def create_borrow_statuses(): ...

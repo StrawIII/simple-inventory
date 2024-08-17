@@ -1,11 +1,26 @@
+from contextlib import asynccontextmanager
+
 from fastapi import APIRouter, Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
 
 from app.api.routers import auth, borrows, health, items, users
 from app.config import settings
+from app.db import engine
 from app.security import verify_user
+from app.startup import creata_root_user, create_item_statuses
 
-app = FastAPI(title=settings.project_name)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    print("starting")
+    db = Session(engine)
+    creata_root_user(db=db, settings=settings)
+    create_item_statuses(db=db, settings=settings)
+    yield
+
+
+app = FastAPI(title=settings.project_name, lifespan=lifespan)
 # ! should not be needed when running behind a reverse proxy like nginx
 app.add_middleware(
     CORSMiddleware,
