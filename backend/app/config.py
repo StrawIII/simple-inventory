@@ -1,4 +1,6 @@
-from typing import Annotated, List
+from __future__ import annotations
+
+from typing import Annotated
 
 from dotenv import find_dotenv
 from fastapi import Depends
@@ -13,7 +15,7 @@ class Settings(BaseSettings):
 
     # api_prefix: str = "/api/v1"
     api_prefix: str = ""
-    cors_origins: List[str] = [
+    cors_origins: list[str] = [
         "http://localhost:3000",
     ]
 
@@ -27,7 +29,7 @@ class Settings(BaseSettings):
 
     csv_encoding: str = "cp1250"
     csv_delimiter: str = ";"
-    csv_headers: List[str] = [
+    csv_headers: list[str] = [
         "Typ",
         "Inv. číslo",
         "Název",
