@@ -6,6 +6,9 @@ services:
       - /etc/localtime:/etc/localtime:ro
     environment:
       - JWT_KEY=${JWT_KEY}
+      - COOKIE_KEY=${COOKIE_KEY}
+      - ROOT_USERNAME=${ROOT_USERNAME}
+      - ROOT_PASSWORD=${ROOT_PASSWORD}
       - MINIO_HOST=${MINIO_HOST}
       - MINIO_PORT=${MINIO_PORT}
       - MINIO_ROOT_USER=${MINIO_ROOT_USER}
