@@ -2,13 +2,11 @@ from typing import Annotated, Generator
 
 import boto3
 from botocore.client import BaseClient
-from fastapi import Depends, HTTPException, status
-from sqlalchemy import create_engine, select
-from sqlalchemy.exc import IntegrityError
+from fastapi import Depends
+from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
-from app.config import SettingsDep, settings
-from app.models import ItemStatus, User
+from app.config import settings
 
 engine = create_engine(str(settings.postgres_dsn), echo=True)
 
