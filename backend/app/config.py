@@ -45,6 +45,12 @@ class Settings(BaseSettings):
         "Hmot. odp.",
     ]
 
+    item_statuses: list[str] = [
+        "AVAILABLE",
+        "UNAVAILABLE",
+        "HIDDEN",
+    ]
+
     max_image_size: int = 2_000_000  # bytes = 2 MB
 
     smtp_enabled: bool = False
