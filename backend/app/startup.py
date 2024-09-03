@@ -31,7 +31,6 @@ def creata_root_user(db: Session, settings: Settings) -> None:
         db.commit()
     except IntegrityError as e:
         db.rollback()
-        # TODO: more granualar responses
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"An error occurred while creating the user: {e}",
@@ -54,7 +53,6 @@ def create_item_statuses(db: DBDep, settings: SettingsDep) -> None:
         db.commit()
     except IntegrityError as e:
         db.rollback()
-        # TODO: more granualar responses
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"An error occurred while creating the user: {e}",
