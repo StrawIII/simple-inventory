@@ -1,3 +1,4 @@
+import subprocess
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
@@ -14,6 +15,8 @@ from app.startup import creata_root_user, create_item_statuses
 
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncGenerator[FastAPI, None]:
+    subprocess.run(["alembic", "upgrade", "head"], check=True)
+
     with Session(engine) as session:
         creata_root_user(db=session, settings=settings)
         create_item_statuses(db=session, settings=settings)
