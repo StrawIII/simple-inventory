@@ -14,7 +14,7 @@ class Settings(BaseSettings):
 
     project_name: str = "Simple Inventory"
 
-    api_prefix: str = ""
+    api_prefix: str = "/api/v1"
     cors_origins: list[str] = [
         "http://localhost:3000",
     ]
@@ -60,8 +60,8 @@ class Settings(BaseSettings):
     smtp_password: str = ""
     smtp_tls: bool = True
 
-    postgres_host: str = "localhost"
-    postgres_port: int = 5432
+    postgres_host: str
+    postgres_port: int
     postgres_user: str
     postgres_password: str
     postgres_db: str
