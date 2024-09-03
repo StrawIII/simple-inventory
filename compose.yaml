@@ -32,7 +32,6 @@ services:
     depends_on:
       - postgres
       - minio
-    # command: alembic upgrade head
   frontend:
     build: frontend
     restart: always
