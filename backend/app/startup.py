@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.config import Settings, SettingsDep
 from app.db import DBDep
-from app.models import ItemStatus, User
+from app.models import BorrowStatus, ItemStatus, User
 from app.security import hash_password
 
 
@@ -43,11 +43,9 @@ def create_item_statuses(db: DBDep, settings: SettingsDep) -> None:
             db.scalars(
                 select(ItemStatus).where(ItemStatus.name == item_status),
             ).one_or_none()
-            is not None
+            is None
         ):
-            continue
-
-        db.add(ItemStatus(name=item_status))
+            db.add(ItemStatus(name=item_status))
 
     try:
         db.commit()
@@ -59,4 +57,21 @@ def create_item_statuses(db: DBDep, settings: SettingsDep) -> None:
         ) from e
 
 
-def create_borrow_statuses(db: Session, settings: Settings): ...
+def create_borrow_statuses(db: Session, settings: Settings):
+    for borrow_status in settings.borrow_statuses:
+        if (
+            db.scalars(
+                select(BorrowStatus).where(BorrowStatus.name == borrow_status),
+            ).one_or_none()
+            is None
+        ):
+            db.add(BorrowStatus(name=borrow_status))
+
+    try:
+        db.commit()
+    except IntegrityError as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"An error occurred while creating the user: {e}",
+        ) from e
