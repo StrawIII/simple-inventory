@@ -35,8 +35,6 @@ services:
   frontend:
     build: frontend
     restart: always
-    depends_on:
-      - backend
   postgres:
     image: postgres:16
     restart: always
@@ -90,11 +88,7 @@ services:
       timeout: ${TIMEOUT}
       retries: ${RETRIES}
     depends_on:
-      backend:
-        condition: service_healthy
-      frontend:
-        condition: service_started
-      postgres:
-        condition: service_healthy
-      minio:
-        condition: service_healthy
+      - backend
+      - frontend
+      - postgres
+      - minio
