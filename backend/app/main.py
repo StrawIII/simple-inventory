@@ -9,8 +9,8 @@ from sqlalchemy.orm import Session
 from app.api.routers import auth, borrows, health, items, users
 from app.config import settings
 from app.db import engine
-from app.security import verify_user
-from app.startup import creata_root_user, create_item_statuses
+from app.security import verify_token
+from app.startup import creata_root_user, create_borrow_statuses, create_item_statuses
 
 
 @asynccontextmanager
@@ -20,7 +20,7 @@ async def lifespan(_: FastAPI) -> AsyncGenerator[FastAPI, None]:
     with Session(engine) as session:
         creata_root_user(db=session, settings=settings)
         create_item_statuses(db=session, settings=settings)
-        # TODO: add create_borrow_status
+        create_borrow_statuses(db=session, settings=settings)
 
     yield
 
@@ -35,7 +35,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-protected_api_router = APIRouter(dependencies=[Depends(verify_user)])
+protected_api_router = APIRouter(dependencies=[Depends(verify_token)])
 protected_api_router.include_router(items.router, prefix="/items", tags=["Items"])
 protected_api_router.include_router(borrows.router, prefix="/borrows", tags=["Borrows"])
 protected_api_router.include_router(users.router, prefix="/users", tags=["Users"])
