@@ -616,7 +616,7 @@ dependencies = [
     { name = "loguru" },
     { name = "psycopg2-binary" },
     { name = "pydantic" },
-    { name = "pydantic", extra = "email" },
+    { name = "pydantic", extra = ["email"] },
     { name = "pydantic-settings" },
     { name = "python-multipart" },
     { name = "sqlalchemy" },

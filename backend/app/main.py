@@ -15,7 +15,7 @@ from app.startup import creata_root_user, create_borrow_statuses, create_item_st
 
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncGenerator[FastAPI, None]:
-    subprocess.run(["alembic", "upgrade", "head"], check=True)
+    subprocess.run(["/app/.venv/bin/alembic", "upgrade", "head"], check=True)
 
     with Session(engine) as session:
         creata_root_user(db=session, settings=settings)
