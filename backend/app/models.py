@@ -26,7 +26,8 @@ class Item(Base):
     name: Mapped[str] = mapped_column(Text)
     owner_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
     status: Mapped[str] = mapped_column(
-        ForeignKey("item_status.name"), default="AVAILABLE"
+        ForeignKey("item_status.name"),
+        default="AVAILABLE",
     )
     comment: Mapped[str] = mapped_column(Text, nullable=True)
     location: Mapped[str] = mapped_column(Text)
@@ -41,7 +42,8 @@ class Borrow(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
     item_id: Mapped[int] = mapped_column(ForeignKey("item.id"))
     status: Mapped[str] = mapped_column(
-        ForeignKey("borrow_status.name"), default="PENDING"
+        ForeignKey("borrow_status.name"),
+        default="PENDING",
     )
     timestamp_from: Mapped[datetime] = mapped_column(TIMESTAMP)
     timestamp_to: Mapped[datetime] = mapped_column(TIMESTAMP)
