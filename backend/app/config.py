@@ -50,6 +50,11 @@ class Settings(BaseSettings):
         "UNAVAILABLE",
         "HIDDEN",
     ]
+    borrow_statuses: list[str] = [
+        "PENDING",
+        "ACCEPTED",
+        "REJECTED",
+    ]
 
     max_image_size: int = 2_000_000  # bytes = 2 MB
 
