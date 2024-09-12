@@ -6,13 +6,13 @@ from jinja2 import Environment, PackageLoader, select_autoescape
 from app.config import settings
 
 
-def render_template(template_name: str, context: dict):
+def render_template(template_name: str, context: dict) -> str:
     env = Environment(loader=PackageLoader("app"), autoescape=select_autoescape())
     template = env.get_template(template_name)
     return template.render(context)
 
 
-def send_mail(from_addr: str, to_addr: str, subject: str, html_content: str):
+def send_mail(from_addr: str, to_addr: str, subject: str, html_content: str) -> None:
     msg = EmailMessage()
     msg["From"] = from_addr
     msg["To"] = to_addr
@@ -23,5 +23,4 @@ def send_mail(from_addr: str, to_addr: str, subject: str, html_content: str):
     with SMTP(settings.smtp_host, settings.smtp_port) as smtp:
         smtp.starttls()
         smtp.login(settings.smtp_user, settings.smtp_password)
-
         smtp.send_message(msg)
