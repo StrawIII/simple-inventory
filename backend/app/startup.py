@@ -57,7 +57,7 @@ def create_item_statuses(db: DBDep, settings: SettingsDep) -> None:
         ) from e
 
 
-def create_borrow_statuses(db: Session, settings: Settings):
+def create_borrow_statuses(db: Session, settings: Settings) -> None:
     for borrow_status in settings.borrow_statuses:
         if (
             db.scalars(
