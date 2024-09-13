@@ -8,5 +8,5 @@ router = APIRouter()
 
 
 @router.get("")
-def index() -> Health:
-    return Health(status="healthy", timestamp=datetime.now())
+def index() -> HealthResponse:
+    return HealthResponse(status="healthy", timestamp=datetime.now())
