@@ -2,7 +2,7 @@ from datetime import datetime
 
 from fastapi import APIRouter
 
-from app.schemas import Health
+from app.schemas.health import HealthResponse
 
 router = APIRouter()
 
