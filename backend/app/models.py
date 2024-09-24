@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import TIMESTAMP, Boolean, ForeignKey, Integer, Text
+from sqlalchemy import TIMESTAMP, Boolean, ForeignKey, Integer, Text, func
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
@@ -16,6 +16,12 @@ class User(Base):
     email: Mapped[str] = mapped_column(Text, unique=True)
     is_admin: Mapped[bool] = mapped_column(Boolean, default=False)
     hashed_password: Mapped[str] = mapped_column(Text)
+    updated_at: Mapped[datetime] = mapped_column(
+        TIMESTAMP,
+        default=func.now(),
+        onupdate=func.now(),
+    )
+    created_at: Mapped[datetime] = mapped_column(TIMESTAMP, default=func.now())
 
 
 class Item(Base):
