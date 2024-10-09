@@ -1,4 +1,3 @@
-import subprocess
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
@@ -10,22 +9,17 @@ from app.api.routers import auth, borrows, health, items, users
 from app.config import settings
 from app.db import engine
 from app.security import verify_token
-from app.startup import creata_root_user, create_borrow_statuses, create_item_statuses
+from app.startup import (
+    creata_root_user,
+    create_borrow_statuses,
+    create_item_statuses,
+    migrate,
+)
 
 
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncGenerator[FastAPI, None]:
-    subprocess.run(
-        [
-            "/app/.venv/bin/alembic",
-            "revision",
-            "--autogenerate",
-            "-m",
-            "Init migration",
-        ],
-        check=True,
-    )
-    subprocess.run(["/app/.venv/bin/alembic", "upgrade", "head"], check=True)
+    migrate()
 
     with Session(engine) as session:
         creata_root_user(db=session, settings=settings)

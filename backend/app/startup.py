@@ -1,3 +1,5 @@
+import subprocess
+
 from fastapi import HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
@@ -7,6 +9,20 @@ from app.config import Settings, SettingsDep
 from app.db import DBDep
 from app.models import BorrowStatus, ItemStatus, User
 from app.security import hash_password
+
+
+def migrate() -> None:
+    subprocess.run(
+        [
+            "/app/.venv/bin/alembic",
+            "revision",
+            "--autogenerate",
+            "-m",
+            "Initial migration",
+        ],
+        check=True,
+    )
+    subprocess.run(["/app/.venv/bin/alembic", "upgrade", "head"], check=True)
 
 
 def creata_root_user(db: Session, settings: Settings) -> None:
